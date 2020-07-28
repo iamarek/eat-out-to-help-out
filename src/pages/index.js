@@ -16,6 +16,7 @@ export default function Home() {
                     rel="stylesheet"
                     type="text/css"
                 />
+                <title>Eat out to help out</title>
             </Helmet>
             <div className="logotype">
                 <img src={Logo} />
