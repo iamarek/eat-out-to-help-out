@@ -6,7 +6,7 @@
   "license": "0BSD",
   "scripts": {
     "build": "gatsby build",
-    "develop": "gatsby develop",
+    "develop": "set GATSBY_ENV=development && gatsby develop",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
     "start": "npm run develop",
     "serve": "gatsby serve",
@@ -15,9 +15,13 @@
   },
   "dependencies": {
     "gatsby": "^2.23.12",
+    "gatsby-plugin-env-variables": "^2.0.0",
     "google-map-react": "^1.1.7",
+    "mapbox-gl": "^1.11.1",
     "react": "^16.12.0",
-    "react-dom": "^16.12.0"
+    "react-dom": "^16.12.0",
+    "react-helmet": "^6.1.0",
+    "react-map-gl": "^5.2.7"
   },
   "devDependencies": {
     "prettier": "2.0.5"

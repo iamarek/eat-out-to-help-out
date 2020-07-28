@@ -6,5 +6,10 @@
 
 module.exports = {
   /* Your site config here */
-  plugins: [],
+  plugins: [{
+    resolve: `gatsby-plugin-env-variables`,
+    options: {
+      allowList: ["APP_MAPBOX_TOKEN"]
+    },
+  },],
 }

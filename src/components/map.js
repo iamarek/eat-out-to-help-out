@@ -1,258 +1,146 @@
-import React, { useState } from 'react';
-import GoogleMapReact from 'google-map-react';
-import Marker from '../../public/marker.png';
-import { useEffect } from 'react';
+import React, { useState, useEffect } from "react"
+import ReactMapGL, { Marker, Popup } from "react-map-gl"
+import * as parkDate from "../../content/skateboard-parks.json"
+import restaurantsData from "../../content/restaurants.json"
+import MarkerIcon from "../../static/marker.png"
 
-const MapMarker = ({ title }) => {
-    const [isOpen, setIsOpen] = useState(false)
-
+const ControlPanel = () => {
     return (
-        <div style={{ position: 'relative', width: '30px' }}>
-            <img src={Marker} height="30px" width="30px" onClick={() => setIsOpen(prevState => !prevState)}/>
-            {isOpen && <div style={{ zIndex: '2', position: 'absolute', left: '100%', top: '0px', fontSize: '24px', width: '150px', background: 'white'}}>{title}</div>}
+        <div className="control-panel">
+            <h3>Create and Style Clusters</h3>
+            <p>
+                Use Mapbox GL JS' built-in functions to visualize points as
+                clusters.
+            </p>
+            <div className="source-link">
+                <a
+                    href="https://github.com/visgl/react-map-gl/tree/5.2-release/examples/clusters"
+                    target="_new"
+                >
+                    View Code ↗
+                </a>
+            </div>
         </div>
     )
 }
 
-const styles = [
-    {
-        "featureType": "all",
-        "elementType": "labels.text.fill",
-        "stylers": [
-            {
-                "saturation": 36
-            },
-            {
-                "color": "#333333"
-            },
-            {
-                "lightness": 40
-            }
-        ]
+export const clusterLayer = {
+    id: "clusters",
+    type: "circle",
+    source: "earthquakes",
+    filter: ["has", "point_count"],
+    paint: {
+        "circle-color": [
+            "step",
+            ["get", "point_count"],
+            "#51bbd6",
+            100,
+            "#f1f075",
+            750,
+            "#f28cb1",
+        ],
+        "circle-radius": ["step", ["get", "point_count"], 20, 100, 30, 750, 40],
     },
-    {
-        "featureType": "all",
-        "elementType": "labels.text.stroke",
-        "stylers": [
-            {
-                "visibility": "on"
-            },
-            {
-                "color": "#ffffff"
-            },
-            {
-                "lightness": 16
-            }
-        ]
+}
+
+export const clusterCountLayer = {
+    id: "cluster-count",
+    type: "symbol",
+    source: "earthquakes",
+    filter: ["has", "point_count"],
+    layout: {
+        "text-field": "{point_count_abbreviated}",
+        "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
+        "text-size": 12,
     },
-    {
-        "featureType": "all",
-        "elementType": "labels.icon",
-        "stylers": [
-            {
-                "visibility": "off"
-            }
-        ]
+}
+
+export const unclusteredPointLayer = {
+    id: "unclustered-point",
+    type: "circle",
+    source: "earthquakes",
+    filter: ["!", ["has", "point_count"]],
+    paint: {
+        "circle-color": "#11b4da",
+        "circle-radius": 4,
+        "circle-stroke-width": 1,
+        "circle-stroke-color": "#fff",
     },
-    {
-        "featureType": "administrative",
-        "elementType": "geometry.fill",
-        "stylers": [
-            {
-                "color": "#fefefe"
-            },
-            {
-                "lightness": 20
-            }
-        ]
-    },
-    {
-        "featureType": "administrative",
-        "elementType": "geometry.stroke",
-        "stylers": [
-            {
-                "color": "#fefefe"
-            },
-            {
-                "lightness": 17
-            },
-            {
-                "weight": 1.2
-            }
-        ]
-    },
-    {
-        "featureType": "landscape",
-        "elementType": "geometry",
-        "stylers": [
-            {
-                "color": "#f5f5f5"
-            },
-            {
-                "lightness": 20
-            }
-        ]
-    },
-    {
-        "featureType": "poi",
-        "elementType": "geometry",
-        "stylers": [
-            {
-                "color": "#f5f5f5"
-            },
-            {
-                "lightness": 21
-            }
-        ]
-    },
-    {
-        "featureType": "poi.park",
-        "elementType": "geometry",
-        "stylers": [
-            {
-                "color": "#dedede"
-            },
-            {
-                "lightness": 21
-            }
-        ]
-    },
-    {
-        "featureType": "road.highway",
-        "elementType": "geometry.fill",
-        "stylers": [
-            {
-                "color": "#ffffff"
-            },
-            {
-                "lightness": 17
-            }
-        ]
-    },
-    {
-        "featureType": "road.highway",
-        "elementType": "geometry.stroke",
-        "stylers": [
-            {
-                "color": "#ffffff"
-            },
-            {
-                "lightness": 29
-            },
-            {
-                "weight": 0.2
-            }
-        ]
-    },
-    {
-        "featureType": "road.arterial",
-        "elementType": "geometry",
-        "stylers": [
-            {
-                "color": "#ffffff"
-            },
-            {
-                "lightness": 18
-            }
-        ]
-    },
-    {
-        "featureType": "road.local",
-        "elementType": "geometry",
-        "stylers": [
-            {
-                "color": "#ffffff"
-            },
-            {
-                "lightness": 16
-            }
-        ]
-    },
-    {
-        "featureType": "transit",
-        "elementType": "geometry",
-        "stylers": [
-            {
-                "color": "#f2f2f2"
-            },
-            {
-                "lightness": 19
-            }
-        ]
-    },
-    {
-        "featureType": "water",
-        "elementType": "all",
-        "stylers": [
-            {
-                "hue": "#00aeff"
-            },
-            {
-                "visibility": "on"
-            }
-        ]
-    },
-    {
-        "featureType": "water",
-        "elementType": "geometry",
-        "stylers": [
-            {
-                "color": "#c7e5fd"
-            },
-            {
-                "lightness": 17
-            }
-        ]
-    }
-]
+}
 
 const MapSimple = ({ markersData, hasSpace }) => {
-    
-    const [mapConfig, setMapConfig] = useState({
-        center: {
-            lat: 54.3456975,
-            lng: 17.1190122
-        },
-        zoom: 8,
-    });
+    const [viewport, setViewport] = useState({
+        latitude: 51.546826,
+        longitude: -0.012137,
+        width: "100vw",
+        height: "100%",
+        zoom: 12,
+    })
+    const [selectedPark, setSelectedPark] = useState(null)
 
-    const apiIsLoaded = (map, maps) => {
-        var bounds = new maps.LatLngBounds()
-
-        markersData.forEach(({lat, lng}) => {
-            bounds.extend({
-                lat: parseFloat(lat),
-                lng: parseFloat(lng)
-            });
-        })
-
-        map.fitBounds(bounds);
-
-        if (markersData.length <= 1) {
-            map.setZoom(9);
+    useEffect(() => {
+        const listener = e => {
+            if (e.key === "Escape") {
+                setSelectedPark(null)
+            }
         }
-    }
-    console.log({ markersData })
+        window.addEventListener("keydown", listener)
+
+        return () => {
+            window.removeEventListener("keydown", listener)
+        }
+    }, [])
+    console.log({ restaurantsData })
     return (
-        <div style={{ height: '100vh'}}>
-            <GoogleMapReact
-                bootstrapURLKeys={{ key: '' }}
-                yesIWantToUseGoogleMapApiInternals
-                onGoogleApiLoaded={({ map, maps }) => apiIsLoaded(map, maps)}
-                defaultCenter={mapConfig.center}
-                options={() => {return {styles}}}
-                defaultZoom={mapConfig.zoom} >
-                    {markersData.map(marker => (
-                        <MapMarker
-                            key={`${marker.lat}-${marker.lng}-${marker.title}`}
-                            lat={marker.lat}
-                            lng={marker.lng}
-                            title={marker.title}
+        <div className="map-wrapper2">
+            <ReactMapGL
+                {...viewport}
+                mapboxApiAccessToken="pk.eyJ1IjoiYXJrYWRpdXN6Y2hhdHlzIiwiYSI6ImNrZDZmdDRwdjAxN3kyeW5uaHI4MzAyZGQifQ.rSqnkPW6fYXW0pyQ9MOEOg"
+                mapStyle="mapbox://styles/arkadiuszchatys/ckd6gt5mm04xf1hmr2fzm8i9h"
+                onViewportChange={viewport => {
+                    setViewport(viewport)
+                }}
+            >
+                {restaurantsData.map(restaurant => (
+                    <Marker
+                        key={restaurant.title}
+                        latitude={restaurant.lat}
+                        longitude={restaurant.lng}
+                    >
+                        <button
+                            className="marker-btn"
+                            onClick={e => {
+                                e.preventDefault()
+                                setSelectedPark(restaurant)
+                            }}
+                        >
+                            <img
+                                src={MarkerIcon}
+                                alt="Skate Park Icon"
+                                width="30px"
+                                height="30px"
                             />
-                    ))}
-            </GoogleMapReact>
+                        </button>
+                    </Marker>
+                ))}
+
+                {selectedPark ? (
+                    <Popup
+                        latitude={selectedPark.lat}
+                        longitude={selectedPark.lng}
+                        onClose={() => {
+                            setSelectedPark(null)
+                        }}
+                    >
+                        <div>
+                            <h2>{selectedPark.title}</h2>
+                            <p>{selectedPark.address}</p>
+                        </div>
+                    </Popup>
+                ) : null}
+            </ReactMapGL>
         </div>
     )
 }
 
-export default MapSimple;
+export default MapSimple
