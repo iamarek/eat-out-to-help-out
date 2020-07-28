@@ -6,6 +6,7 @@ import { Helmet } from "react-helmet"
 
 import Logo from "../../static/logo.png"
 import "../index.css"
+import Search from "../components/search"
 
 export default function Home() {
     return (
@@ -20,6 +21,7 @@ export default function Home() {
             </Helmet>
             <div className="logotype">
                 <img src={Logo} />
+                <Search />
             </div>
 
             <div className="map-wrapper">

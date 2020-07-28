@@ -15,6 +15,11 @@ button {
     padding: 25px 0;
     font-size: 45px;
     text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1400px;
+    margin: auto;
 }
 
 .logotype img {
@@ -80,4 +85,35 @@ footer {
 
 footer a {
     color: black;
+}
+
+.search label {
+    font-size: 11px;
+    margin-bottom: 5px;
+    opacity: 0.5;
+    text-transform: uppercase;
+}
+
+.search {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.search > div {
+    display: flex;
+}
+
+.search button {
+    background: #213ed6;
+    border-radius: 4px;
+    padding: 6px 15px;
+    color: white;
+    border: 0;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 12px;
+    opacity: 1;
+    margin: 0 5px;
 }
