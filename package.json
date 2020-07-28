@@ -16,6 +16,7 @@
   "dependencies": {
     "gatsby": "^2.23.12",
     "gatsby-plugin-env-variables": "^2.0.0",
+    "gatsby-plugin-google-analytics": "^2.3.13",
     "google-map-react": "^1.1.7",
     "mapbox-gl": "^1.11.1",
     "react": "^16.12.0",

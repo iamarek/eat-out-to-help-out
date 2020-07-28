@@ -11,5 +11,10 @@ module.exports = {
     options: {
       allowList: ["APP_MAPBOX_TOKEN"]
     },
+  },{
+    resolve: `gatsby-plugin-google-analytics`,
+    options: {
+      trackingId: `UA-173965151-1`,
+    },
   },],
 }
